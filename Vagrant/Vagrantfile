@@ -1,0 +1,34 @@
+
+ENV['VAGRANT_NO_PARALLEL'] = 'yes'
+
+Vagrant.configure(2) do |config|
+
+  # Kubernetes Master Server
+  config.vm.define "kubemaster" do |kmaster|
+    kmaster.vm.box = "centos/7"
+    kmaster.vm.hostname = "kubemaster.example.com"
+    kmaster.vm.network "private_network", ip: "172.16.16.100"
+    kmaster.vm.provider "virtualbox" do |v|
+      v.name = "kubemaster"
+      v.memory = 2048
+      v.cpus = 2
+    end
+  end
+
+  NodeCount = 2
+
+  # Kubernetes Worker Nodes
+  (1..NodeCount).each do |i|
+    config.vm.define "kubeworker#{i}" do |workernode|
+      workernode.vm.box = "centos/7"
+      workernode.vm.hostname = "kubeworker#{i}.example.com"
+      workernode.vm.network "private_network", ip: "172.16.16.10#{i}"
+      workernode.vm.provider "virtualbox" do |v|
+        v.name = "kubeworker#{i}"
+        v.memory = 2048
+        v.cpus = 1
+      end
+    end
+  end
+
+end
