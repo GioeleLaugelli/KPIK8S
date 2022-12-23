@@ -59,9 +59,9 @@ EOF
 sudo yum install -y kubectl kubeadm kubelet
 sudo systemctl enable --now kubelet
 
-#echo "[task 8] delete config file containerd"
-#sudo rm /etc/containerd/config.toml
-#sudo systemctl restart containerd
+echo "[task 8] delete config file containerd"
+sudo rm /etc/containerd/config.toml
+sudo systemctl restart containerd
 
 #echo "[task 9] install Helm"
 #curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
