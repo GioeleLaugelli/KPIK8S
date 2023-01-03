@@ -62,15 +62,15 @@ echo "[task 7] delete config file containerd"
 sudo rm /etc/containerd/config.toml
 sudo systemctl restart containerd
 
-#echo "[task 9] install Helm"
-#curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-#chmod 700 get_helm.sh
-#./get_helm.sh
+echo "[task 8] install Helm"
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
 
-echo "[task 8] kubeadm init master"
+echo "[task 9] kubeadm init master"
 sudo kubeadm init --apiserver-advertise-address=172.16.16.100 --pod-network-cidr=10.244.0.0/16
 
-echo "[task 9] enable kubectl for user"
+echo "[task 10] enable kubectl for user"
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
