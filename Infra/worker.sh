@@ -9,19 +9,23 @@ echo "[task 2] disabilitare selinux"
 sudo setenforce 0
 sudo sed -i 's/SELINUX=permissive\|SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 
-echo "[task 3] disabilitare swap"
+echo "[task 3] disabilitare firewalld"
+sudo systemctl disable firewalld --now
+sudo systemctl stop firewalld
+
+echo "[task 4] disabilitare swap"
 ## Necessario per il corretto funzionamento di kubelet
 sudo swapoff -a
 sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 
-echo "[task 4] networking kubernetes"
+echo "[task 5] networking kubernetes"
 cat <<EOF | sudo tee /etc/sysctl.d/kubernetes.conf
 net.bridge.bridge-nf-call-ip6tables=1
 net.bridge.bridge-nf-call-iptables=1
 EOF
 sudo sysctl --system
 
-echo "[task 5] Docker installation"
+echo "[task 6] Docker installation"
 sudo yum check-update -y
 sudo yum install -y yum-utils device-mapper-persistent-data lvm2
 sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
@@ -42,7 +46,7 @@ sudo systemctl daemon-reload
 sudo systemctl start docker
 sudo systemctl enable docker --now
 
-echo "[task 6] kubernetes installation"
+echo "[task 7] kubernetes installation"
 cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=kubernetes
@@ -55,10 +59,7 @@ EOF
 sudo yum install -y kubectl kubeadm kubelet
 sudo systemctl enable --now kubelet
 
-echo "[task 7] delete config file containerd"
+echo "[task 8] delete config file containerd"
 sudo rm /etc/containerd/config.toml
 sudo systemctl restart containerd
 
-echo "[task 8] disabilitare firewalld"
-sudo systemctl disable firewalld --now
-sudo systemctl stop firewalld
