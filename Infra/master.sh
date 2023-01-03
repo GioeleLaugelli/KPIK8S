@@ -13,19 +13,19 @@ sudo sed -i 's/SELINUX=permissive\|SELINUX=enforcing/SELINUX=disabled/g' /etc/se
 #sudo systemctl disable firewalld --now
 #sudo systemctl stop firewalld
 
-echo "[task 4] disabilitare swap"
+echo "[task 3] disabilitare swap"
 ## Necessario per il corretto funzionamento di kubelet
 sudo swapoff -a
 sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 
-echo "[task 5] networking kubernetes"
+echo "[task 4] networking kubernetes"
 cat <<EOF | sudo tee /etc/sysctl.d/kubernetes.conf
 net.bridge.bridge-nf-call-ip6tables=1
 net.bridge.bridge-nf-call-iptables=1
 EOF
 sudo sysctl --system
 
-echo "[task 6] Docker installation"
+echo "[task 5] Docker installation"
 sudo yum check-update -y
 sudo yum install -y yum-utils device-mapper-persistent-data lvm2
 sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
@@ -46,7 +46,7 @@ sudo systemctl daemon-reload
 sudo systemctl start docker
 sudo systemctl enable docker --now
 
-echo "[task 7] kubernetes installation"
+echo "[task 6] kubernetes installation"
 cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=kubernetes
@@ -55,11 +55,10 @@ enabled=1
 gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
-
 sudo yum install -y kubectl kubeadm kubelet
 sudo systemctl enable --now kubelet
 
-echo "[task 8] delete config file containerd"
+echo "[task 7] delete config file containerd"
 sudo rm /etc/containerd/config.toml
 sudo systemctl restart containerd
 
@@ -68,10 +67,10 @@ sudo systemctl restart containerd
 #chmod 700 get_helm.sh
 #./get_helm.sh
 
-echo "[task 10] kubeadm init master"
+echo "[task 8] kubeadm init master"
 sudo kubeadm init --apiserver-advertise-address=172.16.16.100 --pod-network-cidr=10.244.0.0/16
 
-echo "[task 11] enable kubectl for user"
+echo "[task 9] enable kubectl for user"
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
