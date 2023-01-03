@@ -9,10 +9,6 @@ echo "[task 2] disabilitare selinux"
 sudo setenforce 0
 sudo sed -i 's/SELINUX=permissive\|SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 
-#echo "[task 3] disabilitare firewalld"
-#sudo systemctl disable firewalld --now
-#sudo systemctl stop firewalld
-
 echo "[task 3] disabilitare swap"
 ## Necessario per il corretto funzionamento di kubelet
 sudo swapoff -a
@@ -74,3 +70,8 @@ echo "[task 10] enable kubectl for user"
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+echo "[task 11] disabilitare firewalld"
+sudo systemctl disable firewalld --now
+sudo systemctl stop firewalld
+
