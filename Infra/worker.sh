@@ -9,10 +9,6 @@ echo "[task 2] disabilitare selinux"
 sudo setenforce 0
 sudo sed -i 's/SELINUX=permissive\|SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 
-#echo "[task 3] disabilitare firewalld"
-#sudo systemctl disable firewalld --now
-#sudo systemctl stop firewalld
-
 echo "[task 3] disabilitare swap"
 ## Necessario per il corretto funzionamento di kubelet
 sudo swapoff -a
@@ -63,3 +59,6 @@ echo "[task 7] delete config file containerd"
 sudo rm /etc/containerd/config.toml
 sudo systemctl restart containerd
 
+echo "[task 8] disabilitare firewalld"
+sudo systemctl disable firewalld --now
+sudo systemctl stop firewalld
